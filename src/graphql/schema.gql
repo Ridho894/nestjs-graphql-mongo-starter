@@ -16,4 +16,12 @@ scalar DateTime
 
 type Query {
   users: [User!]!
+  publicUserStats: String!
+
+  """Health check endpoint"""
+  healthCheck: String!
+}
+
+type Mutation {
+  login(email: String!, password: String!): String!
 }
