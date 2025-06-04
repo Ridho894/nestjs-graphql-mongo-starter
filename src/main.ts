@@ -7,6 +7,7 @@ import { graphqlUploadExpress } from 'graphql-upload-ts';
 
 import { AppModule } from './app.module';
 import { AppConfig } from './config/app.config';
+import { exportSchemasAfterInit } from './graphql/module-schema.factory';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(
@@ -15,17 +16,17 @@ async function bootstrap() {
     {
       cors: AppConfig.cors,
       bodyParser: AppConfig.bodyParser,
-    }
+    },
   );
 
-  app.use(
-    '/graphql',
-    graphqlUploadExpress(AppConfig.graphqlUpload),
-  );
+  app.use('/graphql', graphqlUploadExpress(AppConfig.graphqlUpload));
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.use('/uploads', express.static(AppConfig.staticFiles.uploadsPath));
 
   await app.listen(AppConfig.port);
+
+  await exportSchemasAfterInit(app);
 }
+
 bootstrap();
